@@ -65,6 +65,15 @@ npm run lint-fix   # ESLint with --fix
 
 Pre-commit runs lint-staged (ESLint on staged JS/TS files). Pre-push runs `npm test`.
 
+### Line endings (Windows vs macOS/Linux)
+
+The repo uses **LF** everywhere (`.gitattributes`, Prettier `endOfLine: lf`, `.editorconfig`). Do not switch Git to CRLF. If ESLint/Prettier reports `Delete CR` or `CRLF` after a pull:
+
+```shell
+git add --renormalize .
+git checkout -- .
+```
+
 ## Docker
 
 ```shell

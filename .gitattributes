@@ -1,0 +1,28 @@
+# =============================================================================
+# Кінці рядків (CRLF vs LF)
+# =============================================================================
+# У Git і в CI (Linux) текст завжди з LF.
+# На Windows Git інакше за замовчуванням підставляє CRLF (CR+LF) — тоді
+# ESLint/Prettier сиплють помилками на кшталт "Delete `CR`" / "CRLF".
+#
+# Цей файл змушує checkout і commit бути LF на будь-якій ОС.
+# Студентам НЕ треба міняти git config (core.autocrlf).
+#
+# Якщо після git pull лінтер усе ще свариться на CRLF:
+#   git add --renormalize .
+#   git checkout -- .
+# =============================================================================
+
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+*.pdf binary
