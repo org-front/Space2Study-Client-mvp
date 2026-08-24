@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       HUSKY: 0
+      # GitHub не дає читати secrets у if кроку — тому токен кладемо в env джоби.
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -38,7 +40,7 @@ jobs:
       # 2) додайте репозиторний секрет SONAR_TOKEN (GitHub → Settings → Secrets → Actions)
       # Крок не запускається без токена, щоб CI не падав на порожній заготовці.
       - name: SonarCloud Scan
-        if: ${{ secrets.SONAR_TOKEN != '' && (success() || failure()) }}
+        if: ${{ env.SONAR_TOKEN != '' && (success() || failure()) }}
         uses: SonarSource/sonarqube-scan-action@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
