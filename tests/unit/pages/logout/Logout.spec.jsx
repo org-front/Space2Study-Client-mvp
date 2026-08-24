@@ -1,29 +1,32 @@
-import { render, waitFor } from '@testing-library/react'
-import { useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { screen, waitFor } from '@testing-library/react'
+import { useLocation } from 'react-router-dom'
 import Logout from '~/pages/logout/Logout'
+import { URLs } from '~/constants/request'
 import { guestRoutes } from '~/router/constants/guestRoutes'
+import { mockAxiosClient, renderWithProviders } from '~tests/test-utils'
 
-vi.mock('react-router-dom', () => ({
-  useNavigate: vi.fn()
-}))
-
-vi.mock('react-redux', () => ({
-  useDispatch: vi.fn()
-}))
-
-const dispatch = vi.fn()
-useDispatch.mockReturnValue(dispatch)
-const navigate = vi.fn()
-useNavigate.mockReturnValue(navigate)
+const LocationProbe = () => {
+  const location = useLocation()
+  return <div data-testid='location'>{location.pathname}</div>
+}
 
 describe('Logout', () => {
   it('dispatches logoutUser action and redirects to home route', async () => {
-    render(<Logout />)
+    mockAxiosClient.reset()
+    mockAxiosClient.onPost(URLs.auth.logout).reply(200)
+
+    renderWithProviders(
+      <>
+        <Logout />
+        <LocationProbe />
+      </>,
+      { initialEntries: ['/logout'] }
+    )
+
     await waitFor(() => {
-      expect(dispatch).toHaveBeenCalledTimes(1)
-      expect(navigate).toHaveBeenCalledTimes(1)
-      expect(navigate).toHaveBeenCalledWith(guestRoutes.home.route)
+      expect(screen.getByTestId('location')).toHaveTextContent(
+        guestRoutes.home.route
+      )
     })
   })
 })

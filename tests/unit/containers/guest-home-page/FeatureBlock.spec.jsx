@@ -1,10 +1,18 @@
+import { ThemeProvider } from '@mui/material/styles'
 import { render, screen } from '@testing-library/react'
+import mediaQuery from 'css-mediaquery'
+import { vi } from 'vitest'
 import FeatureBlock from '~/containers/guest-home-page/FeatureBlock'
 import MapLogo from '~/assets/img/guest-home-page/map.svg'
-import useBreakpoints from '~/hooks/use-breakpoints'
-import { vi } from 'vitest'
+import { theme } from '~/styles/app-theme/custom-mui.styles'
 
-vi.mock('~/hooks/use-breakpoints')
+const createMatchMedia = (width) => {
+  return (query) => ({
+    matches: mediaQuery.match(query, { width }),
+    addListener: vi.fn(),
+    removeListener: vi.fn()
+  })
+}
 
 const items = [
   {
@@ -14,16 +22,17 @@ const items = [
   }
 ]
 
-describe('Carousel test', () => {
-  const mobileData = {
-    isLaptopAndAbove: false,
-    isMobile: true,
-    isTablet: false
-  }
+const renderFeatureBlock = () =>
+  render(
+    <ThemeProvider theme={theme}>
+      <FeatureBlock items={items} />
+    </ThemeProvider>
+  )
 
+describe('Carousel test', () => {
   it('Test should render carousel component', () => {
-    useBreakpoints.mockImplementation(() => mobileData)
-    render(<FeatureBlock items={items} />)
+    window.matchMedia = createMatchMedia(375)
+    renderFeatureBlock()
     const carouselComponent = screen.getByTestId('carousel')
     const accordionComponent = screen.queryByTestId('accordion')
 
@@ -33,15 +42,9 @@ describe('Carousel test', () => {
 })
 
 describe('Accordion test', () => {
-  const desktopData = {
-    isLaptopAndAbove: true,
-    isMobile: false,
-    isTablet: false
-  }
-
   it('Test should render accordion component', () => {
-    useBreakpoints.mockImplementation(() => desktopData)
-    render(<FeatureBlock items={items} />)
+    window.matchMedia = createMatchMedia(1444)
+    renderFeatureBlock()
     const accordionComponent = screen.getByTestId('accordion')
     const carouselComponent = screen.queryByTestId('carousel')
 

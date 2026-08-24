@@ -8,3 +8,14 @@ vi.mock('react-i18next', () => ({
     }
   }
 }))
+
+// jsdom has no Google Identity Services script (index.html loads it in the browser).
+// Stub GSI so GoogleButton can mount in any spec without a per-file mock.
+window.google = {
+  accounts: {
+    id: {
+      initialize: vi.fn(),
+      renderButton: vi.fn()
+    }
+  }
+}

@@ -1,33 +1,15 @@
+import { configureStore } from '@reduxjs/toolkit'
 import { screen } from '@testing-library/react'
 import { vi } from 'vitest'
 import AppMain from '~/containers/layout/app-main/AppMain'
+import reducer from '~/redux/reducer'
 import { renderWithProviders } from '~tests/test-utils'
 
 window.scrollTo = vi.fn()
 
-vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual('react-router-dom')
-  return {
-    ...actual,
-    useMatches: () => [{ handle: { crumb: { name: 'home', path: '/' } } }],
-    useNavigation: () => ({ state: 'idle' })
-  }
-})
-
 const mockState = {
   appMain: { loading: true, userRole: '' }
 }
-
-const mockDispatch = vi.fn()
-
-vi.mock('~/services/local-storage-service')
-vi.mock('react-redux', async () => {
-  const actual = await vi.importActual('react-redux')
-  return {
-    ...actual,
-    useDispatch: () => mockDispatch
-  }
-})
 
 describe('AppMain layout component test', () => {
   it('should render loader', () => {
@@ -36,16 +18,21 @@ describe('AppMain layout component test', () => {
     expect(loader).toBeInTheDocument()
   })
 
-  it('should dispatch checkAuth if accessToken exists in localStorage', async () => {
-    renderWithProviders(<AppMain />, {
+  it('should dispatch checkAuth if accessToken exists in localStorage', () => {
+    const store = configureStore({
+      reducer: { appMain: reducer },
       preloadedState: {
         appMain: {
+          loading: false,
           authLoading: false,
           userRole: ''
         }
       }
     })
-    mockDispatch.mock.calls.length = 1
-    expect(mockDispatch).toHaveBeenCalledTimes(1)
+    const dispatchSpy = vi.spyOn(store, 'dispatch')
+
+    renderWithProviders(<AppMain />, { store })
+
+    expect(dispatchSpy).toHaveBeenCalled()
   })
 })

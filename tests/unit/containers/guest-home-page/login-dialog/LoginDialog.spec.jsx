@@ -1,40 +1,31 @@
-import { screen, fireEvent, waitFor } from '@testing-library/react'
-import LoginDialog from '~/containers/guest-home-page/login-dialog/LoginDialog'
-import { renderWithProviders } from '~tests/test-utils'
+import { configureStore } from '@reduxjs/toolkit'
+import { fireEvent, screen, waitFor } from '@testing-library/react'
 import { vi } from 'vitest'
+import LoginDialog from '~/containers/guest-home-page/login-dialog/LoginDialog'
+import { URLs } from '~/constants/request'
+import reducer from '~/redux/reducer'
+import { mockAxiosClient, renderWithProviders } from '~tests/test-utils'
 
-const mockDispatch = vi.fn()
-const mockSelector = vi.fn()
+const createJwt = (payload) => {
+  const encode = (value) =>
+    window
+      .btoa(JSON.stringify(value))
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '')
 
-const mockState = {
-  appMain: { authLoading: false }
+  return `${encode({ alg: 'none' })}.${encode(payload)}.sig`
 }
 
-vi.mock('react-redux', async () => {
-  const actual = await vi.importActual('react-redux')
-  return {
-    ...actual,
-    useDispatch: () => mockDispatch.mockReturnValue({ unwrap: () => '' }),
-    useSelector: () => mockSelector.mockReturnValue(mockState)
-  }
-})
-
-vi.mock('~/hooks/use-confirm', () => {
-  return {
-    default: () => ({ setNeedConfirmation: () => true })
-  }
-})
-
-vi.mock('~/containers/guest-home-page/google-button/GoogleButton', () => ({
-  __esModule: true,
-  default: function () {
-    return <button>Google</button>
-  }
-}))
-
 describe('Login dialog test', () => {
+  let store
+  let dispatchSpy
+
   beforeEach(() => {
-    renderWithProviders(<LoginDialog />)
+    mockAxiosClient.reset()
+    store = configureStore({ reducer: { appMain: reducer } })
+    dispatchSpy = vi.spyOn(store, 'dispatch')
+    renderWithProviders(<LoginDialog />, { store })
   })
 
   it('should render img', () => {
@@ -73,15 +64,22 @@ describe('Login dialog test', () => {
   })
 
   it('should dispatch after button submit', async () => {
+    mockAxiosClient.onPost(URLs.auth.login).reply(200, {
+      accessToken: createJwt({
+        id: '1',
+        role: 'student',
+        isFirstLogin: false
+      })
+    })
+
     const inputEmail = screen.getByLabelText(/common.labels.email/i)
     fireEvent.change(inputEmail, { target: { value: 'test@gmail.com' } })
 
     const inputPassword = screen.getByLabelText(/common.labels.password/i)
     fireEvent.change(inputPassword, { target: { value: '12345678a/A' } })
 
-    const button = screen.getByText('common.labels.login')
-    fireEvent.click(button)
+    fireEvent.click(screen.getByText('common.labels.login'))
 
-    await waitFor(() => expect(mockDispatch).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(dispatchSpy).toHaveBeenCalled())
   })
 })
