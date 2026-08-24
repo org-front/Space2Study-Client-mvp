@@ -18,7 +18,8 @@ export default defineConfig({
   ],
   server: {
     port: 3000,
-    open: true,
+    // У Docker немає браузера — open лише для локального npm start.
+    open: process.env.DOCKER !== '1',
     host: true
   },
   esbuild: {

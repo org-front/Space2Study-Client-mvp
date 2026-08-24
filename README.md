@@ -76,11 +76,13 @@ git checkout -- .
 
 ## Docker
 
+Dev container: Vite on `http://localhost:3000` (not a production nginx image).
+
 ```shell
 docker compose up --build
 ```
 
-The Compose service maps port `3000` and sets `VITE_API_BASE_PATH=http://localhost:8080`. It expects an external Docker network named `s2s-network`.
+`VITE_API_BASE_PATH` defaults to `http://localhost:8080` (the API as seen from the browser). Optional Google/image URLs can be set in a local `.env` next to `compose.yaml` — Compose reads `VITE_GMAIL_CLIENT_ID`, `VITE_APP_IMG_URL`, and `VITE_APP_IMG_USER_URL` from there.
 
 ## Project structure
 

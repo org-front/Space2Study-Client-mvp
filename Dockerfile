@@ -1,41 +1,21 @@
 # syntax=docker/dockerfile:1
+# Dev-образ: Vite на :3000. Не для продакшену (немає nginx / vite build).
 
 ARG NODE_VERSION=18.14.0
 
-### Base image
-##################################################
-FROM node:${NODE_VERSION}-alpine AS base
+FROM node:${NODE_VERSION}-alpine
 
 WORKDIR /usr/src/app
-RUN apk add --no-cache git xdg-utils && \
-    apk update && \
-    apk upgrade && \
-    npm install -g npm@latest
 
-### Install dependencies
-##################################################
-FROM base AS deps
+# Без .git husky install падає. Не оновлюйте npm@latest — він не сумісний з Node 18.14.
+ENV HUSKY=0
+# Щоб Vite не намагався відкрити браузер у контейнері (server.open).
+ENV DOCKER=1
 
-RUN --mount=type=bind,source=package.json,target=package.json,rw \
-    --mount=type=bind,source=package-lock.json,target=package-lock.json,rw \
-    npm i --force
-
-### Build
-##################################################
-FROM deps AS build
+COPY package.json package-lock.json ./
+RUN npm ci
 
 COPY . .
-RUN npm run lint
-RUN npm run build
-
-### Final image
-##################################################
-FROM base AS final
-
-COPY package.json .
-
-COPY --from=deps /usr/src/app/node_modules ./node_modules
-COPY --from=build /usr/src/app/ .
 
 EXPOSE 3000
 
