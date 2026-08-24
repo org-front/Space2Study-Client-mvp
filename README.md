@@ -1,14 +1,6 @@
-# Space2Study-node-Client-mvp
+# Client MVP
 
-<a href="https://softserve.academy/"><img src="../main/photo2.jpg" title="SoftServe IT Academy" alt="SoftServe IT Academy"></a>
-
-# SpaceToStudy project
-
-SpaceToStudy project is a platform where experts in various fields share their knowledge and students can learn from the best. Here you can find the proper training course, find a tutor, or find students and receive feedback from them.
-
-[![GitHub issues](insert your link here)]
-[![Pending Pull-Requests](insert your link here)]
-[![GitHub license](insert your link here)]
+Frontend of an educational marketplace: experts share knowledge, students find tutors and courses, and both sides can receive feedback.
 
 ---
 
@@ -20,17 +12,13 @@ SpaceToStudy project is a platform where experts in various fields share their k
 - [Usage](#Usage)
   - [How to run tests](#How-to-run-tests)
 - [Documentation](#Documentation)
+  - [Tech stack](#tech-stack)
+  - [Project structure](#project-structure)
   - [Rules and guidelines](#Rules-and-guidelines)
   - [Testing](#Testing)
 - [Contributing](#contributing)
   - [git flow](#git-flow)
-  - [issue flow](#git-flow)
-- [Teams](#teams) 
-  - [Development team](#development-team) 
-  - [DevOps team](#devops-team) 
-  - [Designer team](#designer-team) 
-  - [BA team](#ba-team)
-  - [QC team](#qc-team)
+  - [issue flow](#issue-flow)
 - [FAQ](#faq)
 - [License](#license)
 
@@ -56,6 +44,24 @@ SpaceToStudy project is a platform where experts in various fields share their k
 $ npm install
 ```
 
+Create a `.env` file in the project root:
+
+```env
+VITE_API_BASE_PATH=http://localhost:8080
+VITE_GMAIL_CLIENT_ID=
+VITE_APP_IMG_URL=
+VITE_APP_IMG_USER_URL=
+```
+
+| Variable | Purpose |
+| --- | --- |
+| `VITE_API_BASE_PATH` | API base URL for Axios |
+| `VITE_GMAIL_CLIENT_ID` | Google Sign-In client id |
+| `VITE_APP_IMG_URL` | Public images base URL |
+| `VITE_APP_IMG_USER_URL` | User avatars base URL |
+
+Vite only exposes variables that start with `VITE_`.
+
 ### How to run local
 
 1. Open terminal.
@@ -64,30 +70,84 @@ $ npm install
 
 ###### <a name="footnote">*</a> - to run the project you need an `.env` file in root folder
 
-
 ## Usage
 
 ### How to run tests
 
 To run unit test open terminal and run `npm run test` in it.
 
+Other useful scripts:
+
+```shell
+npm start          # Vite dev server, http://localhost:3000
+npm run build      # Production build
+npm run serve      # Preview the production build on port 3000
+npm test           # Vitest with coverage
+npm run lint       # ESLint
+npm run lint-fix   # ESLint with --fix
+```
+
+Pre-commit runs lint-staged (ESLint on staged JS/TS files). Pre-push runs `npm test`.
+
 ---
 
 ## Documentation
 
+### Tech stack
+
+| Area | Used in this repo |
+| --- | --- |
+| UI | React 17, MUI 5 (`@mui/material`, Emotion), MUI X Date Pickers |
+| Bundler | Vite 4 |
+| State | Redux Toolkit (`configureStore`, `createSlice`, `createAsyncThunk`) |
+| Routing | React Router 6 (`createBrowserRouter`, lazy routes) |
+| HTTP | Axios (`src/plugins/axiosClient.js`), interceptors for JWT refresh |
+| i18n | i18next / react-i18next (`en`, `ua`) |
+| Auth extras | Google Identity Services (`accounts.google.com/gsi/client`) |
+| Dates | `date-fns` |
+| Tests | Vitest, Testing Library, jsdom |
+| Quality | ESLint, Prettier, Husky, lint-staged |
+| Runtime | Node.js 18 |
+| Containers | Docker, Docker Compose |
+| CI | GitHub Actions (lint, tests) |
+
+The source is mostly JSX/JS. TypeScript is configured (`tsconfig.json`, `src/vite-env.d.ts`) and used for Vite/Vitest config.
+
+### Project structure
+
+```
+src/
+  assets/        Static files (svg, images)
+  components/    Reusable UI pieces
+  constants/     Shared constants and i18n JSON
+  containers/    Feature-level UI (layout, auth dialogs, home blocks)
+  context/       Modal, snackbar, confirm, step providers
+  hooks/         Shared hooks
+  pages/         Route-level screens
+  plugins/       Axios client, i18n init
+  redux/         Store and app slice
+  router/        Route trees and helpers
+  services/      API and localStorage helpers
+  styles/        MUI theme
+  utils/         Pure helpers and validators
+tests/
+  unit/          Vitest specs, mirrored after `src/`
+```
+
+Path aliases: `~/` → `src/`, `~tests/` → `tests/`.
+
 ### Rules and guidelines
 
 - Redux
-  - For each entity we should have separate folder
-  - In each folder we should have different files for actions, reducer
-    `{modelName}.actions.js` or `{modelName}.reducer.js`
+  - State is managed with Redux Toolkit
+  - For each entity we should have a separate folder
+  - In each folder keep slice logic clearly separated: reducers, thunks (`createAsyncThunk`), and selectors
 - Configuration
   - Configuration is done via `.env` file where environment
     variables are located
 - Styles
-  - For styling function `makeStyles` from `@material-ui`
-    should be used and all styles should be located inside separate
-    component.
+  - Component styles live in a separate `{component-name}.styles.js` file
+  - Pass style objects to MUI `sx`. Theme is created with `createTheme` from `@mui/material`
 - Components
   - Components that are connected to Redux should be located inside
     `containers` folder. Components without connection to Redux should
@@ -100,6 +160,8 @@ To run unit test open terminal and run `npm run test` in it.
     - `index.js` where we export anything from the whole folder
     - `{component-name}.jsx` - file where component is located
     - `{component-name}.styles.js` where all styles are located
+- API
+  - Call the backend through `axiosClient` and `src/services/*`. Do not fetch from UI components directly when a service already exists.
 
 ### Testing
 
@@ -118,37 +180,37 @@ Order of testing components:
 - constants
 - static css styles
 - related components (test only one specific component at the specific moment of time)
+
 ##### How to test:
+
 - testing using snapshots (actual ui)
 - testing logic of component (dynamic)
 
 Snapshots allow us to compare actual UI with saved one and throw an error if it has accidentally changed. We can use flag “updateSnapshot” to update save snapshots of a component.
-It is appropriate for presentational components but doesn’t cover any logic
+It is appropriate for presentational components but doesn’t cover any logic.
 
 ##### What to test in components:
 
 - Properties
-- default properties
-- custom properties
-- Data types (use library “jest-extended”)
+  - default properties
+  - custom properties
+- Data types
 - Conditions (what if)
 - State
-- default state
-- state after some event has happened
+  - default state
+  - state after some event has happened
 - Events
-- with parameters or custom props
-- without arguments
+  - with parameters or custom props
+  - without arguments
 
-#### Sagas
+#### Async thunks
 
 Flow:
 
 - Set up the conditions of our test
 - Mock the actual HTTP requests
-- Instruct the saga to run through everything and finish its business
+- Instruct the thunk to run through everything and finish its business
 - Check that the expected side effects have happened (actions are dispatched, selectors are called, etc)
-
-Link to the full article about proper saga testing: https://dev.to/phil/the-best-way-to-test-redux-sagas-4hib#:~:text=To%20test%20that%20the%20saga,selector%20into%20the%20following%20gen.
 
 #### Actions creators
 
@@ -162,7 +224,7 @@ Checks:
 - valid default state
 - changes of state when action is dispatched for different values of state
 
-#### Cypress
+#### E2E
 
 1. Use `data-cy` as selector
 
@@ -174,17 +236,17 @@ You're encouraged to contribute to our project if you've found any issues or mis
 
 Before sending any pull request, please discuss requirements/changes to be implemented using an existing issue or by creating a new one. All pull requests should be done into `develop` branch.
 
-There are two GitHub projects: **Space2Study-node-Client-mvp** for frontend part and **Space2Study-node-BackEnd-mvp** for backend part. Every project has it's own issues.
+There are two repositories: one for the frontend part and one for the backend part. Every project has its own issues.
 
 Every pull request should be linked to an issue. So if you make changes on frontend or backend parts you should create an issue with a link to corresponding requirement (story, task or epic). Every issue should have its own branch. Every branch name should start from task type (`feature`, `bugfix` or `test`), task number and short description. e.g. **feature/125/create-adminPanel**
 
-All Pull Requests should start from prefix `#xxx-yyy` where xxx - task number and and yyy - short description e.g. **#125-createAdminPanel**
+All Pull Requests should start from prefix `#xxx-yyy` where xxx - task number and yyy - short description e.g. **#125-createAdminPanel**
 
 ---
 
 ### Git flow
 
-We have **main** , **develop** and **feature** branches.  
+We have **main** , **develop** and **feature** branches.
 All **feature** branches must be merged into `develop` branch!!!
 Only the release should merge into the main branch!!!
 
@@ -226,36 +288,6 @@ Only the release should merge into the main branch!!!
 
 ---
 
-## Teams
-
-### Development team
-
-[![@Tolik170](https://avatars.githubusercontent.com/u/63456632?v=4)](https://github.com/Tolik170)
-[![@Mav-Ivan](https://avatars.githubusercontent.com/u/110425368?v=4)](https://github.com/Mav-Ivan)
-[![@dmtrth25](https://avatars.githubusercontent.com/u/56305508?v=4)](https://github.com/dmtrth25)
-[![@abalanovsky](https://avatars.githubusercontent.com/u/108689551?v=4)](https://github.com/abalanovsky)
-[![@OlyaKorchan](https://avatars.githubusercontent.com/u/17857767?v=4)](https://github.com/OlyaKorchan)
-[![@Marichka0406](https://avatars.githubusercontent.com/u/121502737?v=4)](https://github.com/Marichka0406)
-
-### DevOps team
-
-[![@abohatyrov](https://avatars.githubusercontent.com/u/52012169?v=4)](https://github.com/abohatyrov)
-[![@bdeputat](https://avatars.githubusercontent.com/u/36072762?v=4)](https://github.com/bdeputat)
-
-### Designer team
-
-[![@Nastia197](https://avatars.githubusercontent.com/u/76164279?v=4)](https://github.com/Nastia197)
-
-### BA team
-
-[![@IvannaSW](https://avatars.githubusercontent.com/u/24367409?v=4)](https://github.com/IvannaSW)
-
-### QC team
-
-[![@AntonOkun](https://avatars.githubusercontent.com/u/129941062?v=4)](https://github.com/AntonOkun)
-[![@Valent1n0o](https://avatars.githubusercontent.com/u/118978192?v=4)](https://github.com/Valent1n0o)
----
-
 ## FAQ
 
 - **How do I do _specifically_ so and so?**
@@ -266,7 +298,6 @@ Only the release should merge into the main branch!!!
 #### License
 
 - **[MIT license](http://opensource.org/licenses/mit-license.php)**
-- Copyright 2023 © <a href="https://softserve.academy/" target="_blank"> SoftServe IT Academy</a>.
 
 [MIT](https://choosealicense.com/licenses/mit/)
 
