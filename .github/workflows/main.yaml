@@ -9,33 +9,37 @@ on:
 jobs:
   tests:
     runs-on: ubuntu-latest
+    env:
+      HUSKY: 0
     steps:
-      # Checkout the Repo
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v5
         with:
+          # Повна історія потрібна SonarCloud для New Code. Не ставте fetch-depth: 1.
           fetch-depth: 0
 
-      # Install Node 18
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v5
         with:
           node-version: 18
+          cache: npm
 
-      - name : Npm Install
-        run: npm install
-        
-      - name : Lint
-        run : npm run lint
-        
-      - name : Test
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
         run: npm test
-        
-      - name : Check Path
-        run: ls -la && pwd && ls -la /
-      
+
+      # Студенти: увімкніть SonarCloud так:
+      # 1) заповніть sonar.projectKey і sonar.organization у sonar-project.properties
+      # 2) додайте репозиторний секрет SONAR_TOKEN (GitHub → Settings → Secrets → Actions)
+      # Крок не запускається без токена, щоб CI не падав на порожній заготовці.
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        if: success() || failure()
+        if: ${{ secrets.SONAR_TOKEN != '' && (success() || failure()) }}
+        uses: SonarSource/sonarqube-scan-action@v5
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
