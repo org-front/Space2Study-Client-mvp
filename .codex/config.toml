@@ -1,0 +1,17 @@
+# Codex CLI — project MCP (loaded only when the workspace is trusted).
+# Instructions: AGENTS.md in the repo root.
+
+[mcp_servers.github]
+url = "https://api.githubcopilot.com/mcp/"
+bearer_token_env_var = "GITHUB_PERSONAL_ACCESS_TOKEN"
+
+[mcp_servers.context7]
+url = "https://mcp.context7.com/mcp"
+
+[mcp_servers."mui-mcp"]
+command = "npx"
+args = ["-y", "@mui/mcp@latest"]
+
+[mcp_servers."chrome-devtools"]
+command = "npx"
+args = ["-y", "chrome-devtools-mcp@latest"]

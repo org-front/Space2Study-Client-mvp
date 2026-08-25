@@ -14,7 +14,7 @@ Match the user's language. Student-facing comments in config files (Docker, Sona
 
 ## MCP
 
-Declared in `.cursor/mcp.json` (Cursor) and `.vscode/mcp.json` (VS Code Copilot Agent). Restart the editor after changing them.
+Declared in `.cursor/mcp.json` (Cursor), `.vscode/mcp.json` (VS Code Copilot Agent), `.mcp.json` (Claude Code), `.codex/config.toml` (Codex CLI), `.gemini/settings.json` (Gemini CLI). Same servers. Restart the client after changing them. CLI tools have no Cursor Browser — use `chrome-devtools` for live UI.
 
 | Need | Use |
 | --- | --- |

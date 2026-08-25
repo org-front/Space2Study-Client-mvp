@@ -94,8 +94,11 @@ Student guide: [docs/agents.md](docs/agents.md).
 | --- | --- | --- |
 | Cursor | `AGENTS.md`, `.cursor/rules/*.mdc` | `.cursor/mcp.json` |
 | VS Code + Copilot Agent | `.github/copilot-instructions.md` | `.vscode/mcp.json` |
+| Claude Code CLI | `CLAUDE.md` (`@AGENTS.md`) | `.mcp.json` |
+| Codex CLI | `AGENTS.md` | `.codex/config.toml` (trusted workspace) |
+| Gemini CLI | `GEMINI.md` | `.gemini/settings.json` |
 
-Restart the editor after pulling MCP changes. In VS Code open Copilot Chat in **Agent** mode (`chat.mcp.enabled` is on in `.vscode/settings.json`).
+Restart the editor or CLI after pulling MCP changes. In VS Code open Copilot Chat in **Agent** mode (`chat.mcp.enabled` is on in `.vscode/settings.json`). Claude Code: run `claude` in the repo root and approve `.mcp.json` servers on first use. Codex only loads `.codex/config.toml` in a **trusted** folder.
 
 | Server | What it is for | Auth |
 | --- | --- | --- |
