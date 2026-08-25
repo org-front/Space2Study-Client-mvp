@@ -70,8 +70,8 @@
     "build": "vite build",
     "test": "cross-env CI=true vitest --coverage",
     "serve": "vite preview --port 3000",
-    "lint": "eslint src/**/*.{js,jsx,ts,tsx}",
-    "lint-fix": "eslint src/**/*.{js,jsx,ts,tsx} --fix",
+    "lint": "eslint src tests --ext .js,.jsx,.ts,.tsx",
+    "lint-fix": "eslint src tests --ext .js,.jsx,.ts,.tsx --fix",
     "prepare": "husky install",
     "pre-commit": "lint-staged"
   },

@@ -13,7 +13,9 @@ describe('Use confirm custom hook', () => {
   beforeEach(() => {
     const wrapper = ({ children }) => (
       <ConfirmationDialogProvider>
-        <NavigationContext.Provider value={{ navigator }}>{children}</NavigationContext.Provider>
+        <NavigationContext.Provider value={{ navigator }}>
+          {children}
+        </NavigationContext.Provider>
       </ConfirmationDialogProvider>
     )
     res = renderHook(() => useConfirm(), { wrapper })

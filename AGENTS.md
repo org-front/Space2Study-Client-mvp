@@ -35,7 +35,8 @@ Do not use `@modelcontextprotocol/server-github` (deprecated). Do not add Playwr
 ## Git and CI
 
 - Line endings: LF (`.gitattributes`, Prettier, EditorConfig). Do not set `core.autocrlf=true`.
-- CI (`.github/workflows/main.yaml`): `npm ci`, lint `src/**/*`, tests. Sonar runs only if `SONAR_TOKEN` is set.
+- CI (`.github/workflows/main.yaml`): `npm ci`, `npm run lint` (`src` + `tests`), `npm test` (coverage for Sonar). Sonar runs only if `SONAR_TOKEN` is set.
+- Pre-commit: lint-staged on staged JS/TS. There is no pre-push test hook — do not add `npm test` back there.
 - Docker is a **Vite dev** image (`docker compose up --build`), not nginx.
 
 ## Stack facts the model often gets wrong

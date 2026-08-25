@@ -60,12 +60,12 @@ Vite only exposes variables that start with `VITE_`.
 npm start          # Vite dev server, http://localhost:3000
 npm run build      # Production build
 npm run serve      # Preview the production build on port 3000
-npm test           # Vitest with coverage
-npm run lint       # ESLint
+npm test           # Vitest with coverage (CI / Sonar)
+npm run lint       # ESLint on src and tests
 npm run lint-fix   # ESLint with --fix
 ```
 
-Pre-commit runs lint-staged (ESLint on staged JS/TS files). Pre-push runs `npm test`.
+Pre-commit runs lint-staged (ESLint `--fix` on staged JS/TS, including tests). Full tests with coverage run in GitHub Actions, not on push.
 
 ### Line endings (Windows vs macOS/Linux)
 

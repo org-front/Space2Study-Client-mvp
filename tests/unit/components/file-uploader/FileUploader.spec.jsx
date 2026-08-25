@@ -15,17 +15,19 @@ const validationData = {
   typeError: 'becomeTutor.documents.typeError',
   maxQuantityFiles: 7
 }
-const fakeFile = new File(['certificate'], 'test-file.png', { type: 'application/pdf' })
+const fakeFile = new File(['certificate'], 'test-file.png', {
+  type: 'application/pdf'
+})
 
 describe('FileUploader test', () => {
   beforeEach(() => {
     render(
       <FileUploader
-        buttonText={ buttonText }
-        emitter={ emitter }
-        initialError={ initialError }
-        initialState={ initialState }
-        validationData={ validationData }
+        buttonText={buttonText}
+        emitter={emitter}
+        initialError={initialError}
+        initialState={initialState}
+        validationData={validationData}
       />
     )
   })
@@ -44,11 +46,11 @@ describe('FileUploader test with file', () => {
   beforeEach(() => {
     render(
       <FileUploader
-        buttonText={ buttonText }
-        emitter={ emitter }
-        initialError={ initialError }
-        initialState={ initialState }
-        validationData={ validationData }
+        buttonText={buttonText}
+        emitter={emitter}
+        initialError={initialError}
+        initialState={initialState}
+        validationData={validationData}
       />
     )
   })

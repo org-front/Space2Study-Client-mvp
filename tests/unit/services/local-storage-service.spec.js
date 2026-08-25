@@ -1,4 +1,8 @@
-import { getFromLocalStorage, setToLocalStorage, removeFromLocalStorage } from '~/services/local-storage-service'
+import {
+  getFromLocalStorage,
+  setToLocalStorage,
+  removeFromLocalStorage
+} from '~/services/local-storage-service'
 import { vi } from 'vitest'
 
 describe('Local storage service test', () => {

@@ -13,3 +13,4 @@ Vitest is **0.28**: there is no `vi.hoisted`. `vi.mock('~/hooks/...')` often doe
 - i18n is mocked to return the key string. Assert keys, not translated sentences.
 - Do not unit-test third-party libs, translation JSON, or static theme tokens.
 - `tests/unit/router/router.spec.jsx` is skipped on purpose until rewritten for the data router.
+- `npm run lint` includes `tests/`. Pre-commit runs ESLint on staged specs. Full `npm test` (coverage) runs in CI, not on git push.
