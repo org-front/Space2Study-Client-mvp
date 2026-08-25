@@ -22,7 +22,7 @@ Frontend of an educational marketplace: students look for tutors, tutors publish
 
 The source is mostly JSX/JS. TypeScript is configured (`tsconfig.json`, `src/vite-env.d.ts`) and used for Vite/Vitest config.
 
-Cursor Agent reads `AGENTS.md` and `.cursor/rules/`. GitHub MCP is declared in `.cursor/mcp.json` (token stays in your OS env, never in git). UI checks use Cursor's built-in Browser, not Playwright.
+How to use Cursor Agent, Bugbot, Cloud Agents, and MCP with this repo: [docs/agents.md](docs/agents.md) (Ukrainian). Machine-facing rules stay in `AGENTS.md` and `.cursor/rules/`.
 
 ## Requirements
 
@@ -88,7 +88,7 @@ docker compose up --build
 
 ## Cursor Agent and MCP
 
-Committed for the team: `AGENTS.md`, `.cursor/rules/*.mdc`, `.cursor/mcp.json`. Restart Cursor after pulling MCP changes.
+Committed for the team: `AGENTS.md`, `.cursor/rules/*.mdc`, `.cursor/mcp.json`. How students should prompt agents, and which Cursor agents pick this up: [docs/agents.md](docs/agents.md). Restart Cursor after pulling MCP changes.
 
 | Server | What it is for | Auth |
 | --- | --- | --- |
