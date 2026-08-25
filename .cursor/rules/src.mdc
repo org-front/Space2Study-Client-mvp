@@ -1,0 +1,14 @@
+---
+description: React, MUI, Redux, and API conventions under src/
+globs: src/**/*.{js,jsx,ts,tsx}
+alwaysApply: false
+---
+
+# src/
+
+- Presentational UI → `components/`. Feature blocks → `containers/`. Screens → `pages/`. Import the file directly (no required `index.js` barrel).
+- Styles: colocated `{Name}.styles.js` objects passed to MUI `sx`. Theme lives in `src/styles/app-theme/`.
+- State: auth/session in `src/redux/reducer.js`. New async work uses `createAsyncThunk`, not sagas.
+- HTTP: `axiosClient` (`src/plugins/axiosClient.js`) and `src/services/*`. Do not `fetch` from UI when a service exists.
+- i18n: keys in `src/constants/translations/{en,ua}/`. Do not hardcode user-visible copy when a key already exists.
+- Router: `src/router/` with `createBrowserRouter` and lazy routes.

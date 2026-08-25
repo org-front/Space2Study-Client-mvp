@@ -1,0 +1,17 @@
+---
+description: When to use GitHub, Context7, MUI MCP, and the built-in Browser
+alwaysApply: true
+---
+
+# MCP
+
+Keep the set small. Do not add Playwright, Sequential Thinking, or filesystem MCP.
+
+| Task | Tool |
+| --- | --- |
+| MUI 5 components, `sx`, Date Pickers, X APIs | `mui-mcp`: `useMuiDocs` then `fetchDocs` on returned URLs. This repo is **MUI 5**, not v7 — do not take `generateReactCode` defaults (Grid v7, etc.). |
+| Vite 4, React 17, RTK, RR6, Vitest 0.28, axios, i18next | Context7. Pin the **installed major**: React 17, Vite 4, MUI 5, Vitest 0.28. |
+| GitHub issues / PRs / Actions | GitHub MCP if authenticated; otherwise `gh`. Never paste a PAT into JSON. |
+| UI check on `:3000` | Built-in Browser. |
+
+Context7 works without a key (rate-limited). Optional: `CONTEXT7_API_KEY` in the OS env. GitHub needs `GITHUB_PERSONAL_ACCESS_TOKEN` or `/add-plugin github`.

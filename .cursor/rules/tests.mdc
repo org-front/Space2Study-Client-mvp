@@ -1,0 +1,15 @@
+---
+description: Vitest 0.28 and Testing Library pitfalls for this repo
+globs: tests/**/*.{js,jsx,ts,tsx}
+alwaysApply: false
+---
+
+# Tests
+
+Vitest is **0.28**: there is no `vi.hoisted`. `vi.mock('~/hooks/...')` often does **not** replace the module the component imported. Prefer `axios-mock-adapter` on `axiosClient`, real providers, or `matchMedia` — not default-export mocks of `react-redux` / `react-router-dom`.
+
+- Render through `tests/test-utils.jsx` (`renderWithProviders`). It uses `createMemoryRouter` + `RouterProvider` (`path: '*'`). `MemoryRouter` cannot satisfy `useNavigation` / `useMatches`.
+- Google Identity Services is stubbed in `tests/setup-tests.js`. Do not add a per-spec `window.google` unless you are testing GSI itself.
+- i18n is mocked to return the key string. Assert keys, not translated sentences.
+- Do not unit-test third-party libs, translation JSON, or static theme tokens.
+- `tests/unit/router/router.spec.jsx` is skipped on purpose until rewritten for the data router.

@@ -22,6 +22,8 @@ Frontend of an educational marketplace: students look for tutors, tutors publish
 
 The source is mostly JSX/JS. TypeScript is configured (`tsconfig.json`, `src/vite-env.d.ts`) and used for Vite/Vitest config.
 
+Cursor Agent reads `AGENTS.md` and `.cursor/rules/`. GitHub MCP is declared in `.cursor/mcp.json` (token stays in your OS env, never in git). UI checks use Cursor's built-in Browser, not Playwright.
+
 ## Requirements
 
 - Node.js 18.x (Docker image uses `18.14.0`)
@@ -83,6 +85,27 @@ docker compose up --build
 ```
 
 `VITE_API_BASE_PATH` defaults to `http://localhost:8080` (the API as seen from the browser). Optional Google/image URLs can be set in a local `.env` next to `compose.yaml` — Compose reads `VITE_GMAIL_CLIENT_ID`, `VITE_APP_IMG_URL`, and `VITE_APP_IMG_USER_URL` from there.
+
+## Cursor Agent and MCP
+
+Committed for the team: `AGENTS.md`, `.cursor/rules/*.mdc`, `.cursor/mcp.json`. Restart Cursor after pulling MCP changes.
+
+| Server | What it is for | Auth |
+| --- | --- | --- |
+| `mui-mcp` | Official Material UI docs (`npx @mui/mcp`). This app is **MUI 5**. | None |
+| `context7` | Version-specific docs (Vite 4, React 17, Vitest 0.28, …) | Optional `CONTEXT7_API_KEY` |
+| `github` | Issues, PRs, Actions | `GITHUB_PERSONAL_ACCESS_TOKEN` or `/add-plugin github` |
+| Built-in Browser | Click-through checks on `http://localhost:3000` | Enable in Agent tools |
+
+Do not add Playwright MCP unless you introduce Playwright tests. Do not put tokens in JSON files.
+
+**GitHub token** (skip this if you use `/add-plugin github`):
+
+```powershell
+[System.Environment]::SetEnvironmentVariable("GITHUB_PERSONAL_ACCESS_TOKEN", "ghp_your_token", "User")
+```
+
+Then restart Cursor. Never commit a GitHub PAT. `@modelcontextprotocol/server-github` is deprecated — this repo does not use it.
 
 ## Project structure
 

@@ -1,0 +1,12 @@
+---
+description: Vite dev Docker image — do not turn it into a broken multi-stage prod build
+globs: Dockerfile,compose.yaml,.dockerignore
+alwaysApply: false
+---
+
+# Docker (dev)
+
+- One stage: `node:18.14.0-alpine`, `ENV HUSKY=0`, `npm ci`, `CMD npm start`.
+- Do not add `npm i --force`, `npm@latest`, husky/`git` packages, `npm run lint`/`build` in the image, an external `s2s-network`, or a `dist` volume.
+- `VITE_*` come from Compose at **runtime** (Vite dev). `localhost:8080` is the API as seen from the **browser**, not from inside the container.
+- Keep `DOCKER=1` so Vite does not try to open a browser in the container.
