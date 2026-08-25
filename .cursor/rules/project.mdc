@@ -10,6 +10,6 @@ alwaysApply: true
 - Reply in the user's language. Keep student-facing config comments in Ukrainian.
 - Do not commit `.env`, GitHub tokens, `node_modules`, `tests/coverage`, or `test-report.xml`.
 - Line endings are LF. Do not tell students to switch Git to CRLF.
-- UI changes: verify with the built-in Browser on `http://localhost:3000`. Docs: `mui-mcp` + Context7 (pin React 17 / Vite 4 / MUI 5). GitHub: project MCP or `/add-plugin github` — never a PAT in a committed file.
+- UI: built-in Browser on `:3000`. Network/CORS: `chrome-devtools`. Review: Bugbot, not a review MCP. Unused imports: ESLint. Dead code: `npx knip@5`, not `@knip/mcp`. Docs: `mui-mcp` + Context7 (React 17 / Vite 4 / MUI 5).
 - Docker is Vite dev (`npm start` in the container), not a production nginx image.
 - Do not rebind Sonar/CI to `ita-social-projects` / SpaceToStudy.

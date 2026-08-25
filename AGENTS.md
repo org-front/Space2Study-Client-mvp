@@ -22,11 +22,15 @@ Declared in `.cursor/mcp.json`. Restart Cursor after changing it.
 | Vite 4, React 17, RTK, RR6, Vitest 0.28 | Context7, with those majors pinned |
 | GitHub issues / PRs / Actions | GitHub MCP, or `/add-plugin github` (OAuth) |
 | UI check | Built-in Browser on `http://localhost:3000` |
+| Network (status, CORS, request/response) | `chrome-devtools` MCP. Do not control the same tab with Browser and DevTools together. |
+| Code review | `/review-bugbot` or `/review-security`, not a review MCP |
+| Unused imports | `npm run lint` |
+| Dead files / unused exports / unused deps | `npx knip@5` (read-only). `@knip/mcp` needs Node 20; this repo is Node 18. |
 | Local git | `git` in the terminal |
 
 GitHub MCP reads `GITHUB_PERSONAL_ACCESS_TOKEN` from the **OS environment**. Context7 works without a key; optional `CONTEXT7_API_KEY` raises limits. Never paste tokens into JSON.
 
-Do not use `@modelcontextprotocol/server-github` (deprecated). Do not add Playwright MCP unless this repo gains Playwright tests.
+Do not use `@modelcontextprotocol/server-github` (deprecated). Do not add Playwright, Knip, or CodeRabbit MCP.
 
 ## Git and CI
 

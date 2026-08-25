@@ -1,17 +1,21 @@
 ---
-description: When to use GitHub, Context7, MUI MCP, and the built-in Browser
+description: When to use GitHub, Context7, MUI, Chrome DevTools, review, and dead-code tools
 alwaysApply: true
 ---
 
-# MCP
+# MCP and analysis
 
-Keep the set small. Do not add Playwright, Sequential Thinking, or filesystem MCP.
+Keep the set small. Do not add Playwright, Sequential Thinking, filesystem, CodeRabbit, or Knip MCP.
 
-| Task | Tool |
+| Task | Use |
 | --- | --- |
-| MUI 5 components, `sx`, Date Pickers, X APIs | `mui-mcp`: `useMuiDocs` then `fetchDocs` on returned URLs. This repo is **MUI 5**, not v7 — do not take `generateReactCode` defaults (Grid v7, etc.). |
-| Vite 4, React 17, RTK, RR6, Vitest 0.28, axios, i18next | Context7. Pin the **installed major**: React 17, Vite 4, MUI 5, Vitest 0.28. |
-| GitHub issues / PRs / Actions | GitHub MCP if authenticated; otherwise `gh`. Never paste a PAT into JSON. |
-| UI check on `:3000` | Built-in Browser. |
+| MUI 5 | `mui-mcp`: `useMuiDocs` then `fetchDocs`. Not MUI 7 codegen. |
+| Vite 4 / React 17 / RTK / RR6 / Vitest 0.28 | Context7, pin those majors |
+| GitHub issues / PRs | GitHub MCP if authenticated, else `gh` |
+| Click-through UI on `:3000` | Built-in Browser |
+| Network (status, CORS, payload, failed `/auth`) | `chrome-devtools`: `list_network_requests` / `get_network_request`. Do not drive the same page with Browser and Chrome DevTools at once. |
+| Code review | Cursor Bugbot / Security Review subagents (`/review-bugbot`, `/review-security`). Not an extra MCP. |
+| Unused imports | `npm run lint`. `eslint:recommended` already flags unused bindings. |
+| Dead files / unused exports / unused deps | `npx knip@5` (Node 18). Official `@knip/mcp` needs Node 20+ — do not add it here. Report only; do not mass-delete in this fork. |
 
-Context7 works without a key (rate-limited). Optional: `CONTEXT7_API_KEY` in the OS env. GitHub needs `GITHUB_PERSONAL_ACCESS_TOKEN` or `/add-plugin github`.
+GitHub: `GITHUB_PERSONAL_ACCESS_TOKEN` or `/add-plugin github`. Context7: optional `CONTEXT7_API_KEY`. Chrome DevTools needs local Chrome.

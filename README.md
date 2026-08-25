@@ -95,9 +95,12 @@ Committed for the team: `AGENTS.md`, `.cursor/rules/*.mdc`, `.cursor/mcp.json`. 
 | `mui-mcp` | Official Material UI docs (`npx @mui/mcp`). This app is **MUI 5**. | None |
 | `context7` | Version-specific docs (Vite 4, React 17, Vitest 0.28, …) | Optional `CONTEXT7_API_KEY` |
 | `github` | Issues, PRs, Actions | `GITHUB_PERSONAL_ACCESS_TOKEN` or `/add-plugin github` |
+| `chrome-devtools` | Live Chrome: network, console, performance | Local Chrome |
 | Built-in Browser | Click-through checks on `http://localhost:3000` | Enable in Agent tools |
 
-Do not add Playwright MCP unless you introduce Playwright tests. Do not put tokens in JSON files.
+**Not MCP (on purpose).** Code review: Cursor Bugbot / Security Review. Unused imports: `npm run lint`. Dead files/exports/deps: `npx knip@5` (Node 18). Official `@knip/mcp` needs Node 20+, so it is not in this repo.
+
+Do not add Playwright MCP unless you introduce Playwright tests. Do not put tokens in JSON files. Do not drive the same page with Browser and Chrome DevTools at once.
 
 **GitHub token** (skip this if you use `/add-plugin github`):
 
