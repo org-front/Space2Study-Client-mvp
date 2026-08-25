@@ -14,7 +14,7 @@ Match the user's language. Student-facing comments in config files (Docker, Sona
 
 ## MCP
 
-Declared in `.cursor/mcp.json`. Restart Cursor after changing it.
+Declared in `.cursor/mcp.json` (Cursor) and `.vscode/mcp.json` (VS Code Copilot Agent). Restart the editor after changing them.
 
 | Need | Use |
 | --- | --- |

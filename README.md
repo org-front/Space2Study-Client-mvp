@@ -22,7 +22,7 @@ Frontend of an educational marketplace: students look for tutors, tutors publish
 
 The source is mostly JSX/JS. TypeScript is configured (`tsconfig.json`, `src/vite-env.d.ts`) and used for Vite/Vitest config.
 
-How to use Cursor Agent, Bugbot, Cloud Agents, and MCP with this repo: [docs/agents.md](docs/agents.md) (Ukrainian). Machine-facing rules stay in `AGENTS.md` and `.cursor/rules/`.
+How to use Cursor Agent, VS Code Copilot Agent, Bugbot, and MCP: [docs/agents.md](docs/agents.md) (Ukrainian). Cursor rules: `AGENTS.md` + `.cursor/rules/`. VS Code: `.github/copilot-instructions.md` + `.vscode/mcp.json`.
 
 ## Requirements
 
@@ -86,9 +86,16 @@ docker compose up --build
 
 `VITE_API_BASE_PATH` defaults to `http://localhost:8080` (the API as seen from the browser). Optional Google/image URLs can be set in a local `.env` next to `compose.yaml` — Compose reads `VITE_GMAIL_CLIENT_ID`, `VITE_APP_IMG_URL`, and `VITE_APP_IMG_USER_URL` from there.
 
-## Cursor Agent and MCP
+## Agents and MCP
 
-Committed for the team: `AGENTS.md`, `.cursor/rules/*.mdc`, `.cursor/mcp.json`. How students should prompt agents, and which Cursor agents pick this up: [docs/agents.md](docs/agents.md). Restart Cursor after pulling MCP changes.
+Student guide: [docs/agents.md](docs/agents.md).
+
+| Editor | Instructions | MCP |
+| --- | --- | --- |
+| Cursor | `AGENTS.md`, `.cursor/rules/*.mdc` | `.cursor/mcp.json` |
+| VS Code + Copilot Agent | `.github/copilot-instructions.md` | `.vscode/mcp.json` |
+
+Restart the editor after pulling MCP changes. In VS Code open Copilot Chat in **Agent** mode (`chat.mcp.enabled` is on in `.vscode/settings.json`).
 
 | Server | What it is for | Auth |
 | --- | --- | --- |
@@ -96,7 +103,7 @@ Committed for the team: `AGENTS.md`, `.cursor/rules/*.mdc`, `.cursor/mcp.json`. 
 | `context7` | Version-specific docs (Vite 4, React 17, Vitest 0.28, …) | Optional `CONTEXT7_API_KEY` |
 | `github` | Issues, PRs, Actions | `GITHUB_PERSONAL_ACCESS_TOKEN` or `/add-plugin github` |
 | `chrome-devtools` | Live Chrome: network, console, performance | Local Chrome |
-| Built-in Browser | Click-through checks on `http://localhost:3000` | Enable in Agent tools |
+| Built-in Browser | Cursor Agent click-through on `:3000` | Enable in Cursor Agent tools |
 
 **Not MCP (on purpose).** Code review: Cursor Bugbot / Security Review. Unused imports: `npm run lint`. Dead files/exports/deps: `npx knip@5` (Node 18). Official `@knip/mcp` needs Node 20+, so it is not in this repo.
 
@@ -108,7 +115,7 @@ Do not add Playwright MCP unless you introduce Playwright tests. Do not put toke
 [System.Environment]::SetEnvironmentVariable("GITHUB_PERSONAL_ACCESS_TOKEN", "ghp_your_token", "User")
 ```
 
-Then restart Cursor. Never commit a GitHub PAT. `@modelcontextprotocol/server-github` is deprecated — this repo does not use it.
+Then restart the editor. Never commit a GitHub PAT. `@modelcontextprotocol/server-github` is deprecated — this repo does not use it. In Cursor you can skip the env var and use `/add-plugin github`.
 
 ## Project structure
 

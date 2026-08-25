@@ -18,4 +18,4 @@ Keep the set small. Do not add Playwright, Sequential Thinking, filesystem, Code
 | Unused imports | `npm run lint`. `eslint:recommended` already flags unused bindings. |
 | Dead files / unused exports / unused deps | `npx knip@5` (Node 18). Official `@knip/mcp` needs Node 20+ — do not add it here. Report only; do not mass-delete in this fork. |
 
-GitHub: `GITHUB_PERSONAL_ACCESS_TOKEN` or `/add-plugin github`. Context7: optional `CONTEXT7_API_KEY`. Chrome DevTools needs local Chrome.
+GitHub: `GITHUB_PERSONAL_ACCESS_TOKEN` (Cursor: also `/add-plugin github`). Context7: optional `CONTEXT7_API_KEY`. Chrome DevTools needs local Chrome. VS Code Copilot Agent uses `.vscode/mcp.json` + `.github/copilot-instructions.md`, not `.cursor/rules`.

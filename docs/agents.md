@@ -1,6 +1,6 @@
 # Робота з агентами в цьому репо
 
-Це інструкція **для людей**. Файл `AGENTS.md` і папка `.cursor/rules/` — інструкції **для моделі**: їх не треба копіювати в чат, агент у Cursor підхоплює їх сам.
+Це інструкція **для людей**. Інструкції **для моделі** не треба вставляти в чат: Cursor читає `AGENTS.md` і `.cursor/rules/`, VS Code Copilot Agent — `.github/copilot-instructions.md`.
 
 Робоча гілка: `develop`. Стек: React 17, Vite 4, MUI 5, Redux Toolkit, React Router 6, Vitest, Node 18.
 
@@ -14,27 +14,42 @@
 | `.cursor/rules/tests.mdc` | Агент (коли відкриті `tests/`) | Vitest 0.28, `renderWithProviders` |
 | `.cursor/rules/docker.mdc` | Агент (Dockerfile / Compose) | Не збирати «прод» nginx |
 | `.cursor/rules/mcp.mdc` | Агент (завжди) | Який MCP / CLI на яку задачу |
-| `.cursor/mcp.json` | Cursor | Підключення GitHub, Context7, MUI, Chrome DevTools |
+| `.cursor/mcp.json` | Cursor | GitHub, Context7, MUI, Chrome DevTools |
+| `.vscode/mcp.json` | VS Code Copilot Agent | Ті самі сервери (`servers`, не `mcpServers`) |
+| `.github/copilot-instructions.md` | GitHub Copilot | Заміна `.cursor/rules` у VS Code |
 
-Після `git pull` перезапустіть Cursor (або Reload Window), інакше MCP може не підхопитись.
+Після `git pull` перезапустіть Cursor або VS Code, інакше MCP може не підхопитись.
 
 ## Які агенти вміють цей флоу
 
-Працює все, що відкриває **цю папку як проєкт Cursor** і має режим Agent.
+Працює все, що відкриває **корінь репо** як workspace.
 
-| Агент | Читає правила + `AGENTS.md` | MCP з `.cursor/mcp.json` | Коли користуватись |
+### Cursor
+
+| Агент | Читає `AGENTS.md` + `.cursor/rules` | MCP з `.cursor/mcp.json` | Коли користуватись |
 | --- | --- | --- | --- |
-| **Cursor Agent** (чат, режим Agent) | Так | Так | Основний спосіб: фічі, баги, тести, Docker |
+| **Cursor Agent** | Так | Так | Основний спосіб у Cursor |
 | **Plan** | Так (читає код) | Зазвичай ні, поки не перейдете в Agent | Велика задача з кількома варіантами |
-| **Ask / Ask mode** | Так | Обмежено | «Поясни», без правок файлів |
-| **Cursor CLI** (`cursor agent` у корені репо) | Так | Так, якщо CLI бачить той самий `.cursor/` | Те саме, що Agent, з термінала |
-| **Cloud Agent** (фоновий агент у Cursor / з GitHub) | Так, якщо репо підключене | Частково: потрібні Secrets у дашборді Cursor, не ваш локальний `.env` | Довгі задачі, поки ви не сидите в IDE |
-| **Bugbot** (`/review-bugbot`) | Дивиться diff | Ні | Рев’ю змін / PR на баги |
-| **Security Review** (`/review-security`) | Дивиться diff | Ні | Рев’ю на секрети, XSS, небезпечні запити |
+| **Ask** | Так | Обмежено | «Поясни», без правок файлів |
+| **Cursor CLI** | Так | Так | Те саме з термінала |
+| **Cloud Agent** | Так, якщо репо підключене | Secrets у дашборді Cursor | Довгі задачі поза IDE |
+| **Bugbot** / **Security Review** | Diff | Ні | Рев’ю змін / PR |
 
-**Не підхоплюють цей флоу** (або майже ні): Tab / inline autocomplete, звичайний ChatGPT / Claude у браузері, GitHub Copilot у VS Code, агент в іншому клоні без цих файлів. Вони не читають `.cursor/mcp.json`.
+Tab / inline autocomplete правила майже не читає.
 
-GitHub MCP у хмарі не візьме ваш Windows User env. Для Cloud Agent GitHub — або Cursor GitHub App (Integrations), або секрет у [Cloud Agents dashboard](https://cursor.com/dashboard/cloud-agents).
+### VS Code (GitHub Copilot)
+
+Потрібні розширення **GitHub Copilot** + **GitHub Copilot Chat** і режим **Agent** у чаті (не звичайний Ask).
+
+| Що | Де |
+| --- | --- |
+| Інструкції для моделі | `.github/copilot-instructions.md` (і `AGENTS.md`, якщо Copilot його підхоплює) |
+| MCP | `.vscode/mcp.json` — у `.vscode/settings.json` увімкнено `chat.mcp.enabled` |
+| UI / мережа | `chrome-devtools` (немає Cursor Browser і Bugbot) |
+
+Command Palette: `MCP: List Servers`. Якщо `github` червоний — немає `GITHUB_PERSONAL_ACCESS_TOKEN`; MUI і Context7 мають працювати без ключа.
+
+**Не підхоплюють флоу:** ChatGPT / Claude у браузері, Copilot **completions** (сірий текст), агент в іншій папці без цих файлів.
 
 ## Що для чого: задача → інструмент
 
@@ -45,10 +60,10 @@ GitHub MCP у хмарі не візьме ваш Windows User env. Для Cloud
 | Написати / змінити UI, роути, Redux | Cursor Agent + правила `src` | Новий UI-фреймворк |
 | Документація MUI 5 (`sx`, Date Pickers) | MCP `mui-mcp` (`useMuiDocs`) | Копіювати приклади MUI 7 |
 | Документація Vite 4 / React 17 / RTK / RR6 / Vitest 0.28 | MCP `context7` (пін **цих** мажорів) | «як у React 19» |
-| Кліки по екрану на `http://localhost:3000` | Вбудований **Browser** у Agent | Playwright MCP |
+| Кліки по екрану на `http://localhost:3000` | Cursor: вбудований **Browser**. VS Code: `chrome-devtools` | Playwright MCP |
 | Мережа: 401, CORS, тіло Axios | MCP `chrome-devtools` | Водити ту саму вкладку Browser + DevTools одночасно |
 | Issue / PR / Actions | MCP `github` або `/add-plugin github` | PAT у файлі в git |
-| Рев’ю коду | `/review-bugbot` або `/review-security` | CodeRabbit MCP |
+| Рев’ю коду | Cursor: `/review-bugbot` або `/review-security`. VS Code: Copilot Agent по diff | CodeRabbit MCP |
 | Невикористані імпорти | `npm run lint` (pre-commit + CI) | Окремий MCP |
 | Мертві файли / експорти / залежності | `npx knip@5` (лише звіт) | `@knip/mcp` (потрібен Node 20, у нас 18) |
 | Lint + тести з coverage | GitHub Actions | Pre-push хук (його навмисно немає) |
@@ -66,14 +81,22 @@ GitHub MCP у хмарі не візьме ваш Windows User env. Для Cloud
 
 ## Мінімальне налаштування студента
 
-1. Відкрити папку репо в **Cursor**, не «один файл».
-2. Режим **Agent**, у списку tools увімкнути Browser.
-3. `mui-mcp` і `context7` працюють без ключів (Context7 можна прискорити змінною `CONTEXT7_API_KEY`).
-4. **GitHub:** Command Palette → `/add-plugin github` (OAuth). Або змінна середовища `GITHUB_PERSONAL_ACCESS_TOKEN` і перезапуск Cursor. Токен у `.cursor/mcp.json` не вписувати.
-5. **Chrome DevTools:** має бути встановлений Chrome.
-6. Локально: Node 18, `.env` як у README, API на `http://localhost:8080`.
+### Cursor
 
-Червоний індикатор `github` у MCP без токена / плагіна — нормально. Решта агентського флоу (правила, MUI, Context7, Browser) працює й так.
+1. Відкрити **корінь** репо, режим **Agent**, у tools увімкнути Browser.
+2. `mui-mcp` і `context7` без ключів. GitHub: `/add-plugin github` або `GITHUB_PERSONAL_ACCESS_TOKEN`.
+3. Chrome для `chrome-devtools`. Node 18, `.env` як у README, API на `:8080`.
+
+### VS Code
+
+1. Рекомендовані розширення з `.vscode/extensions.json` (Copilot + Copilot Chat + ESLint).
+2. Copilot Chat → **Agent** (не Ask). MCP: Command Palette → `MCP: List Servers`.
+3. Той самий `GITHUB_PERSONAL_ACCESS_TOKEN` у змінних середовища Windows/macOS, потім перезапуск VS Code. Токен не писати в JSON.
+4. Жива сторінка й мережа — через `chrome-devtools`, не Cursor Browser.
+
+Червоний `github` без токена — нормально. MUI / Context7 працюють і так.
+
+GitHub MCP у **Cloud Agent** Cursor не бере ваш User env: Integrations або [Cloud Agents secrets](https://cursor.com/dashboard/cloud-agents).
 
 ## Чого не додавати
 
